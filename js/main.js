@@ -207,3 +207,113 @@ class DynamicAdapt {
 }
 const da = new DynamicAdapt("max");
 da.init();
+
+// ================================================================ header scroll =====================================================
+let addWindowScrollEvent = false;
+
+function headerScroll() {
+    addWindowScrollEvent = true;
+    const header = document.querySelector('header.header');
+    const headerShow = header.hasAttribute('data-scroll-show');
+    const headerShowTimer = header.dataset.scrollShow ? header.dataset.scrollShow : 500;
+    const startPoint = header.dataset.scroll ? header.dataset.scroll : 1;
+    let scrollDirection = 0;
+    let timer;
+    document.addEventListener("windowScroll", function (e) {
+        const scrollTop = window.scrollY;
+        clearTimeout(timer);
+        if (scrollTop >= startPoint) {
+            !header.classList.contains('header-scroll') ? header.classList.add('header-scroll') : null;
+            if (headerShow) {
+                if (scrollTop > scrollDirection) {
+                    // downscroll code
+                    header.classList.contains('header-show') ? header.classList.remove('header-show') : null;
+                } else {
+                    // upscroll code
+                    !header.classList.contains('header-show') ? header.classList.add('header-show') : null;
+                }
+                timer = setTimeout(() => {
+                    !header.classList.contains('header-show') ? header.classList.add('header-show') : null;
+                }, headerShowTimer);
+            }
+        } else {
+            header.classList.contains('header-scroll') ? header.classList.remove('header-scroll') : null;
+            if (headerShow) {
+                header.classList.contains('header-show') ? header.classList.remove('header-show') : null;
+            }
+        }
+        scrollDirection = scrollTop <= 0 ? 0 : scrollTop;
+    });
+}
+
+headerScroll();
+
+setTimeout(() => {
+    if (addWindowScrollEvent) {
+        let windowScroll = new Event("windowScroll");
+        window.addEventListener("scroll", function (e) {
+            document.dispatchEvent(windowScroll);
+        });
+    }
+}, 0);
+
+// ============================================================== Swiper ==========================================================
+function initSliders() {
+    // Список слайдерів
+    // Перевіряємо, чи є слайдер на сторінці
+    if (document.querySelector('.action__slider') && window.innerWidth <= 992) { // Вказуємо клас потрібного слайдера та перевіряємо ширину екрану
+        // Створюємо слайдер
+        new Swiper('.action__slider', { // Вказуємо клас потрібного слайдера
+            observer: true,
+            observeParents: true,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            speed: 800,
+
+            //touchRatio: 0,
+            // simulateTouch: true,
+            // loop: true,
+            //preloadImages: false,
+            //lazy: true,
+
+            // // Ефекти
+            // effect: 'fade',
+            // autoplay: {
+            // 	delay: 3000,
+            // 	disableOnInteraction: false,
+            // },
+
+            // Пагінація
+            /*
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            */
+
+            // Скроллбар
+            // scrollbar: {
+            //     el: '.swiper-scrollbar',
+            //     draggable: true,
+            // },
+
+            // Кнопки "вліво/вправо"
+            // navigation: {
+            //     prevEl: '',
+            //     nextEl: '',
+            // },
+        });
+    }
+}
+
+window.addEventListener("load", function (e) {
+    // Запуск ініціалізації слайдерів
+    initSliders();
+    
+    // Додати прослуховувач подій на зміну розміру вікна
+    window.addEventListener('resize', function () {
+        if (window.innerWidth <= 992) {
+            initSliders();
+        }
+    });
+});
