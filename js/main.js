@@ -258,51 +258,29 @@ setTimeout(() => {
 }, 0);
 
 // ============================================================== Swiper ==========================================================
+let actionSlider; // Змінна для зберігання екземпляра слайдера
+
 function initSliders() {
-    // Список слайдерів
-    // Перевіряємо, чи є слайдер на сторінці
-    if (document.querySelector('.action__slider') && window.innerWidth <= 992) { // Вказуємо клас потрібного слайдера та перевіряємо ширину екрану
+    // Перевіряємо, чи є слайдер на сторінці та чи підходить ширина екрану
+    if (document.querySelector('.action__slider') && window.innerWidth <= 992 && !actionSlider) { 
         // Створюємо слайдер
-        new Swiper('.action__slider', { // Вказуємо клас потрібного слайдера
+        actionSlider = new Swiper('.action__slider', { // Вказуємо клас потрібного слайдера
             observer: true,
             observeParents: true,
             slidesPerView: 1,
             spaceBetween: 0,
             speed: 800,
 
-            //touchRatio: 0,
-            // simulateTouch: true,
-            // loop: true,
-            //preloadImages: false,
-            //lazy: true,
-
-            // // Ефекти
-            // effect: 'fade',
-            // autoplay: {
-            // 	delay: 3000,
-            // 	disableOnInteraction: false,
-            // },
-
             // Пагінація
-            /*
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
             },
-            */
-
-            // Скроллбар
-            // scrollbar: {
-            //     el: '.swiper-scrollbar',
-            //     draggable: true,
-            // },
-
-            // Кнопки "вліво/вправо"
-            // navigation: {
-            //     prevEl: '',
-            //     nextEl: '',
-            // },
         });
+    } else if (window.innerWidth > 992 && actionSlider) {
+        // Знищуємо слайдер, якщо ширина екрана більше 992 пікселів
+        actionSlider.destroy(true, true); // Повне знищення слайдера
+        actionSlider = null; // Очищаємо змінну
     }
 }
 
@@ -310,10 +288,8 @@ window.addEventListener("load", function (e) {
     // Запуск ініціалізації слайдерів
     initSliders();
     
-    // Додати прослуховувач подій на зміну розміру вікна
+    // Додаємо прослуховувач подій на зміну розміру вікна
     window.addEventListener('resize', function () {
-        if (window.innerWidth <= 992) {
-            initSliders();
-        }
+        initSliders(); // Викликаємо функцію при зміні розміру вікна
     });
 });

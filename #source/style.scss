@@ -645,6 +645,7 @@ body {
         }
         img{
             width: 100%;
+            max-height: rem(1100);
         }
         // .action__image_1
 
@@ -653,6 +654,7 @@ body {
 }
 
 @media (max-width: em(991.98)) { 
+
     .swiper {
         overflow: hidden;
     }
@@ -701,5 +703,33 @@ body {
         &__image{
             position: relative;
         }
+        &__slide{
+            &:nth-child(-n+3){
+                display: none;
+            }
+        }
+
+        &__pagination{
+            display: flex;
+            gap: rem(10);
+            justify-content: center;
+            position: absolute;
+            bottom: 2%;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
     }
 }
+
+.swiper-pagination-bullet{
+    transition: all 0.8s ease 0s;
+    display: block;
+    width: rem(15);
+    height: rem(15);
+    background-color: #caacd3;
+    border-radius: 50%;
+    &-active{
+        background-color: $mainColor;
+    }
+}
+
