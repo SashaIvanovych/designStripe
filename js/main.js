@@ -592,3 +592,115 @@ formFieldsInit({
 });
 
 formSubmit();
+
+// ============================================================= Parallax ============================================================
+
+/*
+Параметри data-атрибутів для налаштування ефекту паралаксу:
+
+1. Для батьківського елемента ([data-prlx-parent]):
+   - data-prlx-smooth: Визначає плавність анімації. За замовчуванням 15. Більше значення - більш плавний ефект.
+   - data-prlx-center: Визначає точку відліку для паралаксу. Можливі значення:
+      * "top": верхня точка екрану
+      * "center": центр екрану (за замовчуванням)
+      * "bottom": нижня точка екрану
+    data-prlx-disable-width="992"  
+ 
+2. Для дочірніх елементів ([data-prlx]):
+   - data-axis: Визначає вісь руху. Можливі значення:
+      * "v": вертикальний рух (за замовчуванням)
+      * "h": горизонтальний рух
+   - data-direction: Визначає напрямок руху. Якщо не вказано, рух відбувається в протилежному напрямку прокрутки.
+   - data-coefficient: Коефіцієнт швидкості руху. За замовчуванням 5. Менше значення - швидший рух.
+   - data-properties: Додаткові CSS властивості трансформації, які будуть додані до елемента.
+*/
+
+class Parallax {
+    constructor(elements) {
+        if (elements.length) {
+            this.elements = Array.from(elements).map((el) => (
+                new Parallax.Each(el)
+            ));
+        }
+    }
+}
+
+Parallax.Each = class {
+    constructor(parent) {
+        this.parent = parent;
+        this.elements = this.parent.querySelectorAll('[data-prlx]');
+        this.animation = this.animationFrame.bind(this);
+        this.offset = 0;
+        this.value = 0;
+        this.smooth = parent.dataset.prlxSmooth ? Number(parent.dataset.prlxSmooth) : 15;
+        // Set to 0 if attribute is not present, meaning parallax is always enabled
+        this.disableWidth = parent.dataset.prlxDisableWidth ? Number(parent.dataset.prlxDisableWidth) : 0;
+        this.setEvents();
+    }
+
+    setEvents() {
+        this.animationID = window.requestAnimationFrame(this.animation);
+    }
+
+    animationFrame() {
+        const windowWidth = window.innerWidth;
+
+        // Check if parallax should be disabled based on screen width
+        if (windowWidth < this.disableWidth) {
+            this.elements.forEach(el => {
+                el.style.transform = 'none';
+            });
+            this.animationID = window.requestAnimationFrame(this.animation);
+            return;
+        }
+
+        const topToWindow = this.parent.getBoundingClientRect().top;
+        const heightParent = this.parent.offsetHeight;
+        const heightWindow = window.innerHeight;
+        const positionParent = {
+            top: topToWindow - heightWindow,
+            bottom: topToWindow + heightParent,
+        }
+        const centerPoint = this.parent.dataset.prlxCenter || 'center';
+
+        if (positionParent.top < 30 && positionParent.bottom > -30) {
+            switch (centerPoint) {
+                case 'top':
+                    this.offset = -1 * topToWindow;
+                    break;
+                case 'center':
+                    this.offset = (heightWindow / 2) - (topToWindow + (heightParent / 2));
+                    break;
+                case 'bottom':
+                    this.offset = heightWindow - (topToWindow + heightParent);
+                    break;
+            }
+        }
+
+        this.value += (this.offset - this.value) / this.smooth;
+        this.animationID = window.requestAnimationFrame(this.animation);
+
+        this.elements.forEach(el => {
+            const parameters = {
+                axis: el.dataset.axis || 'v',
+                direction: el.dataset.direction ? el.dataset.direction + '1' : '-1',
+                coefficient: el.dataset.coefficient ? Number(el.dataset.coefficient) : 5,
+                additionalProperties: el.dataset.properties || '',
+            }
+            this.parameters(el, parameters);
+        });
+    }
+
+    parameters(el, parameters) {
+        if (parameters.axis == 'v') {
+            el.style.transform = `translate3D(0, ${(parameters.direction * (this.value / parameters.coefficient)).toFixed(2)}px,0) ${parameters.additionalProperties}`;
+        } else if (parameters.axis == 'h') {
+            el.style.transform = `translate3D(${(parameters.direction * (this.value / parameters.coefficient)).toFixed(2)}px,0,0) ${parameters.additionalProperties}`;
+        }
+    }
+}
+
+// Ініціалізація паралаксу
+if (document.querySelectorAll('[data-prlx-parent]')) {
+    new Parallax(document.querySelectorAll('[data-prlx-parent]'));
+}
