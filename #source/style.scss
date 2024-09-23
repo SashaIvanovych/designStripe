@@ -800,7 +800,7 @@ body {
 
     &__button {
         @include adaptive-value("padding", 20, 15);
-        @media (max-width: em(359.98)) { 
+        @media (max-width: em(499.98)) { 
             width: 100%;
         }
     }
@@ -1281,7 +1281,7 @@ body {
         padding: rem(18) rem(10);
         font-size: rem(20);
         line-height: percent(24,20);
-        @media (max-width: em(359.98)) { 
+        @media (max-width: em(499.98)) { 
             width: 100%;
         }
     }
@@ -1292,5 +1292,110 @@ body {
         position: absolute;
         bottom: rem(-15);
         left: 0;
+    }
+}
+
+.footer {
+    @include adaptive-value("padding-top", 64, 25);
+    @include adaptive-value("padding-bottom", 64, 25);
+
+    // .footer__container
+
+    &__container {
+        border-top: 1px solid #D1D5DB;
+        @include adaptive-value("padding-top", 64, 25);
+    }
+
+    // .footer__body
+
+    &__body {
+        display: flex;
+        justify-content: space-between;
+        row-gap: rem(20);
+        &:not(:last-child){
+            @include adaptive-value("margin-bottom", 28, 0);
+        }
+        @media (max-width: em(991.98)) { 
+            flex-direction: column-reverse;
+        }
+    }
+
+    // .footer__social
+
+    &__social {
+        align-self: end;
+        @media (max-width: em(991.98)) { 
+            align-self: start;
+        }
+    }
+
+    // .footer__menu
+
+    &__menu {
+    }
+
+    // .footer__copy
+
+    &__copy {
+        font-size: rem(12);
+        line-height: percent(17,12);
+    }
+}
+.social {
+    padding-bottom: rem(16);
+    display: flex;
+    gap: rem(32);
+
+    // .social__item
+
+    &__item {
+    }
+}
+.menu-footer {
+    display: flex;
+    // @include adaptive-value("column-gap", 48, 20, 0, 1440,992);
+    -moz-column-gap:rem(48);
+    column-gap:rem(48);
+    row-gap:rem(20);
+
+    // .menu-footer__column
+    @media (max-width: em(991.98)) { 
+        flex-wrap: wrap;
+    }
+
+    &__column {
+        @include adaptive-value("width", 166, 120, 0, 1440, 992);
+    }
+
+    // .menu-footer__title
+
+    &__title {
+        font-size: rem(15);
+        line-height: percent(22,15);
+        &:not(:last-child){
+            @include adaptive-value("margin-bottom", 15, 10);;
+        }
+    }
+
+    // .menu-footer__list
+
+    &__list {
+    }
+
+    // .menu-footer__item
+
+    &__item {
+        padding: rem(8) 0;
+    }
+
+    // .menu-footer__link
+
+    &__link {
+        color:inherit;
+        @media(any-hover:hover) {
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 }
