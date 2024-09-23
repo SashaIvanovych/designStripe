@@ -744,6 +744,9 @@ body {
             bottom: 2%;
             left: 50%;
             transform: translate(-50%, 0);
+            @media (min-width: em(700)) { 
+                display: none;
+            }
         }
     }
     .swiper-pagination-bullet{

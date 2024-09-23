@@ -268,13 +268,27 @@ function initSliders() {
             observer: true,
             observeParents: true,
             slidesPerView: 1,
-            spaceBetween: 0,
+            spaceBetween: 10,
             speed: 800,
 
             // Пагінація
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
+            },
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                },
+                450: {
+                    slidesPerView: 2,
+                    spaceBetween: 10,
+                },
+                700: {
+                    slidesPerView: 3,
+                    spaceBetween: 15,
+                },
             },
         });
     } else if (window.innerWidth > 992 && actionSlider) {
